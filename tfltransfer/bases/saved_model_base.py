@@ -62,7 +62,7 @@ class SavedModelBase(quantizable_base.QuantizableBase):
         self._bottleneck_shape = tuple(
             next(signature.output_shapes.values().__iter__())
         )
-        if self.bottleneck_shape[0] == None:
+        if self._bottleneck_shape[0] == None:
             raise Exception(
                 "Batch Size Not specified for Base model [add `batch_size` parameter to keras Input layer]"
             )
