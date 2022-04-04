@@ -58,10 +58,15 @@ class QuantizableBase(object):
 
     def tflite_model(self):
         converter = self.prepare_converter()
+        converter.target_spec.supported_ops = [
+            tf.lite.OpsSet.TFLITE_BUILTINS,
+            tf.lite.OpsSet.SELECT_TF_OPS,
+        ]
+        converter.optimizations = [tf.lite.Optimize.DEFAULT]
         if self._quantize and self._representative_dataset:
             converter.optimizations = [tf.lite.Optimize.DEFAULT]
             converter.representative_dataset = self._representative_dataset
         elif self._quantize:
-            converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
 
         return converter.convert()
