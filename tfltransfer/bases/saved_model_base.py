@@ -58,9 +58,14 @@ class SavedModelBase(quantizable_base.QuantizableBase):
 
         loaded_model = tf.saved_model.load(model_dir, tags=[tag])
         signature = loaded_model.signatures[signature_key]
+        # Batch size is same as set while converting
         self._bottleneck_shape = tuple(
-            next(signature.output_shapes.values().__iter__())[1:]
+            next(signature.output_shapes.values().__iter__())
         )
+        if self.bottleneck_shape[0] == None:
+            raise Exception(
+                "Batch Size Not specified for Base model [add `batch_size` parameter to keras Input layer]"
+            )
 
     def prepare_converter(self):
         """Prepares an initial configuration of a TFLiteConverter."""
